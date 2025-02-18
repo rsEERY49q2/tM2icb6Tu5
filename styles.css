@@ -1,0 +1,73 @@
+body {
+    font-family: Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#buses {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+#timeDisplay {
+    font-size: 48px;
+    margin: 20px 0;
+    color: #333;
+    text-align: center;
+}
+
+.bus-container {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 15px;
+    width: 90%;
+    max-width: 800px;
+    margin: 10px 0;
+    padding: 15px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    height: 75px;
+}
+
+.circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.destination {
+    font-size: 24px;
+    line-height: 1.2;
+}
+
+.time {
+    font-size: 48px;
+    text-align: right;
+}
+
+#noBusesMessage {
+    font-size: 50px;
+    text-align: center;
+    margin: 20px 0;
+    color: #333;
+}
