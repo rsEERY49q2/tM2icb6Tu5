@@ -72,3 +72,19 @@ body {
             margin: 20px 0;
             color: #333;
         }
+
+            #weather {
+            position: fixed;
+            bottom: 15px;
+            left: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #333;
+            font-size: 48px;
+        }
+
+            #weather img {
+            width: 120px;
+            height: 120px;
+        }
