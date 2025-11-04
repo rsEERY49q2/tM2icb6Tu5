@@ -11,6 +11,11 @@ body {
             overflow: hidden;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         #buses {
             flex-grow: 1;
             display: flex;
@@ -27,6 +32,7 @@ body {
             margin: 20px 0;
             color: #333;
             text-align: center;
+            transition: opacity 0.5s ease;
         }
 
         .bus-container {
@@ -41,6 +47,7 @@ body {
             border-radius: 15px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
             height: 75px;
+            animation: fadeIn 0.6s ease forwards;
         }
 
         .circle {
@@ -71,6 +78,7 @@ body {
             text-align: center;
             margin: 20px 0;
             color: #333;
+            animation: fadeIn 0.8s ease forwards;
         }
 
         #weather {
@@ -81,6 +89,7 @@ body {
             align-items: center;
             color: #333;
             font-size: 48px;
+            animation: fadeIn 1s ease forwards;
         }
 
         #weather img {
