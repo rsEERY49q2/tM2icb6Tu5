@@ -2,8 +2,8 @@ const settings = {
             apiKey: 'qFdQvL4jTNcpNZzrzr7GDW7rv',
             stopIds: ['1169', '1225', '7888'],
             refreshInterval: 10000,
-            groupSize: 3,  // Display 3 buses at a time
-            totalBuses: 6, // Show only 6 buses, but scroll 3 at a time
+            groupSize: 3,
+            totalBuses: 6,
             routeColors: {
                 A: { circleColor: '#EE3425', textColor: '#FEFEFE' },
                 B: { circleColor: '#80BC00', textColor: '#FEFEFE' },
@@ -34,7 +34,9 @@ const settings = {
                 62: { circleColor: '#025806', textColor: '#FEFEFE' },
                 63: { circleColor: '#2E3192', textColor: '#FEFEFE' },
                 64: { circleColor: '#646464', textColor: '#FEFEFE' },
-            }
+            },
+            weatherApiKey: '3027d03aa4e945c2be314310250411',
+            weatherLocation: 'Madison,WI'
         };
 
         let currentIndex = 0;
@@ -80,17 +82,11 @@ const settings = {
                 return;
             }
 
-            // Get only the first 6 buses (max 6 buses)
             const busesToDisplay = buses.slice(0, settings.totalBuses);
 
-            // Show 3 buses at a time, and scroll through them
             for (let i = currentIndex; i < currentIndex + settings.groupSize; i++) {
-                const bus = busesToDisplay[i % busesToDisplay.length]; // Ensure the index wraps around for scrolling
-
-                const routeColors = settings.routeColors[bus.route] || {
-                    circleColor: '#000000',
-                    textColor: '#FFFFFF'
-                };
+                const bus = busesToDisplay[i % busesToDisplay.length];
+                const routeColors = settings.routeColors[bus.route] || { circleColor: '#000000', textColor: '#FFFFFF' };
 
                 const busElement = document.createElement('div');
                 busElement.className = 'bus-container';
@@ -105,7 +101,6 @@ const settings = {
                 busesContainer.appendChild(busElement);
             }
 
-            // Move the index forward by 3 buses (for scrolling)
             currentIndex = (currentIndex + settings.groupSize) % busesToDisplay.length;
         }
 
@@ -122,4 +117,22 @@ const settings = {
             setTimeout(refreshBusData, settings.refreshInterval);
         }
 
+        async function updateWeather() {
+            const url = `https://api.weatherapi.com/v1/current.json?key=${settings.weatherApiKey}&q=${encodeURIComponent(settings.weatherLocation)}&aqi=no`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                const tempF = Math.round(data.current.temp_f);
+                const iconUrl = "https:" + data.current.condition.icon;
+
+                document.getElementById('weatherTemp').textContent = `${tempF}°`;
+                document.getElementById('weatherIcon').src = iconUrl;
+            } catch (error) {
+                console.error("Weather fetch failed:", error);
+            }
+
+            setTimeout(updateWeather, 600000);
+
         refreshBusData();
+        updateWeather();
