@@ -132,7 +132,7 @@ const settings = {
                 console.error("Weather fetch failed:", error);
             }
 
-            setTimeout(updateWeather, 600000);
+            setTimeout(updateWeather, 10000);
         }
 
         refreshBusData();
