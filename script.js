@@ -133,6 +133,7 @@ const settings = {
             }
 
             setTimeout(updateWeather, 600000);
+        }
 
         refreshBusData();
         updateWeather();
