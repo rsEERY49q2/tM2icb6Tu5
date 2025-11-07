@@ -16,6 +16,12 @@ body {
         to { opacity: 1; transform: translateY(0); }
     }
 
+    @keyframes pulse {
+        0% { transform: scale(1); box-shadow: 0 0 5px rgba(0,255,0,0.5); }
+        50% { transform: scale(1.3); box-shadow: 0 0 15px rgba(0,255,0,0.7); }
+        100% { transform: scale(1); box-shadow: 0 0 5px rgba(0,255,0,0.5); }
+    }
+
     #buses {
         flex-grow: 1;
         display: flex;
@@ -83,29 +89,40 @@ body {
     }
 
     #weather {
-            position: fixed;
-            bottom: -2px;
-            left: 25px;
-            display: flex;
-            align-items: center;
-            color: #333;
-            font-size: 48px;
-            animation: fadeIn 1s ease forwards;
-        }
+        position: fixed;
+        bottom: 0;
+        left: 25px;
+        display: flex;
+        align-items: center;
+        color: #333;
+        font-size: 48px;
+        opacity: 0;
+        animation: fadeIn 1s ease forwards;
+    }
 
-        #weather img {
-            width: 100px;
-            height: 100px;
-        }
+    #weather img {
+        width: 100px;
+        height: 100px;
+        margin-left: 10px;
+    }
 
     #statusLight {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
+        bottom: 35px;
+        right: 25px;
         width: 25px;
         height: 25px;
         border-radius: 50%;
         background-color: red;
-        box-shadow: 0 0 10px rgba(0,0,0,0.3);
-        transition: background-color 0.3s ease;
+        box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    }
+
+    .connected {
+        background-color: green !important;
+        animation: pulse 1.5s infinite !important;
+    }
+
+    .disconnected {
+        background-color: red !important;
+        animation: none !important;
     }
