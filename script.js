@@ -41,17 +41,8 @@ const settings = {
 
 let currentIndex = 0;
 let lastBusData = [];
-const statusLight = document.getElementById('statusLight');
 
-function setStatusLight(connected) {
-    if (connected) {
-        statusLight.classList.remove('disconnected');
-        statusLight.classList.add('connected');
-    } else {
-        statusLight.classList.remove('connected');
-        statusLight.classList.add('disconnected');
-    }
-}
+const statusLight = document.getElementById('statusLight');
 
 async function getBusData() {
     const stopIds = settings.stopIds.join(',');
@@ -60,37 +51,40 @@ async function getBusData() {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        setStatusLight(true);
+        statusLight.style.backgroundColor = 'green';
         return data['bustime-response']?.prd || [];
     } catch (error) {
         console.error('Error fetching bus data:', error);
-        setStatusLight(false);
+        statusLight.style.backgroundColor = 'red';
         return lastBusData;
     }
 }
 
 function parseBusData(data) {
     const now = new Date();
-    return data.map(entry => {
-        const arrivalTime = new Date(
-            entry.prdtm.replace(/^(\d{4})(\d{2})(\d{2}) (\d{2}):(\d{2})$/, '$1-$2-$3T$4:$5')
-        );
-        const minutesUntil = Math.max(0, Math.floor((arrivalTime - now) / 60000));
-        return {
-            route: entry.rt,
-            destination: `${entry.des} (${entry.rtdir})`,
-            time: minutesUntil === 0 ? 'DUE' : `${minutesUntil} min`,
-            arrivalTime
-        };
-    }).sort((a, b) => a.arrivalTime - b.arrivalTime);
+    return data
+        .map(entry => {
+            const arrivalTime = new Date(
+                entry.prdtm.replace(/^(\d{4})(\d{2})(\d{2}) (\d{2}):(\d{2})$/, '$1-$2-$3T$4:$5')
+            );
+            const minutesUntil = Math.max(0, Math.floor((arrivalTime - now) / 60000));
+            return {
+                route: entry.rt,
+                destination: `${entry.des} (${entry.rtdir})`,
+                time: minutesUntil === 0 ? 'DUE' : `${minutesUntil} min`,
+                arrivalTime
+            };
+        })
+        .sort((a, b) => a.arrivalTime - b.arrivalTime);
 }
 
 function updateDisplay(buses) {
     const busesContainer = document.getElementById('buses');
-    busesContainer.style.opacity = 0;
+    busesContainer.style.opacity = 0; // fade out
 
     setTimeout(() => {
         busesContainer.innerHTML = '';
+
         if (buses.length === 0) {
             busesContainer.innerHTML = '<div id="noBusesMessage">No buses available right now.</div>';
         } else {
@@ -99,7 +93,8 @@ function updateDisplay(buses) {
 
             for (let i = currentIndex; i < endIndex; i++) {
                 const bus = busesToDisplay[i];
-                const routeColors = settings.routeColors[bus.route] || { circleColor: '#000', textColor: '#fff' };
+                const routeColors = settings.routeColors[bus.route] || { circleColor: '#000000', textColor: '#FFFFFF' };
+
                 const busElement = document.createElement('div');
                 busElement.className = 'bus-container';
                 busElement.innerHTML = `
@@ -112,7 +107,11 @@ function updateDisplay(buses) {
                 busesContainer.appendChild(busElement);
             }
 
-            currentIndex = (currentIndex + settings.groupSize >= busesToDisplay.length) ? 0 : currentIndex + settings.groupSize;
+            if (currentIndex + settings.groupSize >= busesToDisplay.length) {
+                currentIndex = 0;
+            } else {
+                currentIndex += settings.groupSize;
+            }
         }
 
         busesContainer.style.transition = 'opacity 0.7s ease';
