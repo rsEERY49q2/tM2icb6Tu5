@@ -103,6 +103,7 @@ body {
     #statusLight {
         position: fixed;
         bottom: 35px;
+        right: 25px;
         width: 25px;
         height: 25px;
         border-radius: 50%;
