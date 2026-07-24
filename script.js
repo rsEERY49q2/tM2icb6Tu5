@@ -4,8 +4,6 @@ const settings = {
     refreshInterval: 10000,
     groupSize: 3,
     totalBuses: 6,
-    weatherApiKey: '3027d03aa4e945c2be314310250411',
-    weatherLocation: 'Madison,WI',
     routeColors: {
         A: { circleColor: '#EE3425', textColor: '#FEFEFE' },
         B: { circleColor: '#80BC00', textColor: '#FEFEFE' },
@@ -42,22 +40,18 @@ const settings = {
 let currentIndex = 0;
 let lastBusData = [];
 
-const statusLight = document.getElementById('statusLight');
-
 async function getBusData() {
     const stopIds = settings.stopIds.join(',');
     const url = `https://corsproxy.io/?https://metromap.cityofmadison.com/bustime/api/v3/getpredictions?key=${settings.apiKey}&stpid=${stopIds}&format=json`;
 
     try {
-        const response = await fetch(url);
-        const data = await response.json();
-        statusLight.style.backgroundColor = 'green';
-        return data['bustime-response']?.prd || [];
-    } catch (error) {
-        console.error('Error fetching bus data:', error);
-        statusLight.style.backgroundColor = 'red';
-        return lastBusData;
-    }
+    const response = await fetch(url);
+    const data = await response.json();
+    return data['bustime-response']?.prd || [];
+} catch (error) {
+    console.error('Error fetching bus data:', error);
+    return lastBusData;
+}
 }
 
 function parseBusData(data) {
@@ -125,32 +119,7 @@ async function refreshBusData() {
     const parsedData = parseBusData(busData);
     updateDisplay(parsedData);
 
-    const now = new Date();
-    const centralTime = new Date(now.toLocaleString("en-US", { timeZone: "America/Chicago" }));
-    document.getElementById('timeDisplay').textContent = centralTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
     setTimeout(refreshBusData, settings.refreshInterval);
 }
 
-async function updateWeather() {
-    const url = `https://api.weatherapi.com/v1/current.json?key=${settings.weatherApiKey}&q=${encodeURIComponent(settings.weatherLocation)}&aqi=no`;
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        const tempF = Math.round(data.current.temp_f);
-        const iconUrl = "https:" + data.current.condition.icon;
-        const weather = document.getElementById('weather');
-
-        document.getElementById('weatherTemp').textContent = `${tempF}°`;
-        document.getElementById('weatherIcon').src = iconUrl;
-
-        weather.style.opacity = 0;
-        setTimeout(() => { weather.style.opacity = 1; }, 150);
-    } catch (error) {
-        console.error("Weather fetch failed:", error);
-    }
-    setTimeout(updateWeather, 600000);
-}
-
 refreshBusData();
-updateWeather();
